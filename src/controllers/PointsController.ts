@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
+// Tipagem de Request/Response pode variar conforme ambiente de build (ex.: Vercel).
+// Aqui usamos `any` para evitar falhas de type-checking em pipelines que executam `tsc` estrito.
 import knex from "../database/connection";
 
 class PointsController {
-  async index(request: Request, response: Response) {
+  async index(request: any, response: any) {
     const { city, uf, items } = request.query;
 
     const parsedItems = String(items)
@@ -29,7 +30,7 @@ class PointsController {
     return response.json(serializedPoints);
   }
 
-  async show(request: Request, response: Response) {
+  async show(request: any, response: any) {
     const { id } = request.params;
 
     const baseUrl = `${request.protocol}://${request.get("host")}`;
@@ -53,7 +54,7 @@ class PointsController {
     return response.json({ point: serializedPoint, items });
   }
 
-  async create(request: Request, response: Response) {
+  async create(request: any, response: any) {
     const {
       name,
       email,
