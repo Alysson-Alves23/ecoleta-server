@@ -114,6 +114,21 @@ class PointsController {
         .json({ message: "Selecione ao menos 1 item de coleta." });
     }
 
+    // Validar se todos os item_ids existem no banco
+    const existingItems = await knex("items")
+      .whereIn("id", parsedItems)
+      .select("id");
+    
+    const existingIds = existingItems.map((item: any) => item.id);
+    const invalidIds = parsedItems.filter((id: number) => !existingIds.includes(id));
+    
+    if (invalidIds.length > 0) {
+      console.error("IDs de items inválidos:", invalidIds, "IDs válidos no banco:", existingIds);
+      return response.status(400).json({
+        message: `IDs de items inválidos: ${invalidIds.join(", ")}. Por favor, recarregue a página e tente novamente.`,
+      });
+    }
+
     const trx = await knex.transaction();
 
     const point = {
