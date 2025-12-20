@@ -129,7 +129,17 @@ class PointsController {
 
     const insertedIds = await trx("points").insert(point).returning("id");
 
-    const point_id = insertedIds[0].id || insertedIds[0];
+    // PostgreSQL retorna [{id: X}], SQLite retorna [X]
+    const insertedPoint = Array.isArray(insertedIds) && insertedIds.length > 0 ? insertedIds[0] : null;
+    const point_id = insertedPoint?.id ?? insertedPoint;
+    
+    if (!point_id) {
+      await trx.rollback();
+      console.error("Falha ao obter ID do ponto inserido:", insertedIds);
+      return response.status(500).json({ message: "Falha ao criar ponto de coleta." });
+    }
+
+    console.log("Point ID obtido:", point_id, "tipo:", typeof point_id);
 
     const pointItems = parsedItems.map((item_id: number) => {
         return {
