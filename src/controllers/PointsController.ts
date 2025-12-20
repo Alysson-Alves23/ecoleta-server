@@ -127,9 +127,9 @@ class PointsController {
       uf,
     };
 
-    const insertedIds = await trx("points").insert(point);
+    const insertedIds = await trx("points").insert(point).returning("id");
 
-    const point_id = insertedIds[0];
+    const point_id = insertedIds[0].id || insertedIds[0];
 
     const pointItems = parsedItems.map((item_id: number) => {
         return {
