@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
 import knex from "../database/connection";
 
 class PointsController {
-  async index(request: Request, response: Response) {
+  async index(request: any, response: any) {
     const { city, uf, items } = request.query;
 
     const itemsRaw = Array.isArray(items)
@@ -46,7 +45,7 @@ class PointsController {
     return response.json(serializedPoints);
   }
 
-  async show(request: Request, response: Response) {
+  async show(request: any, response: any) {
     const { id } = request.params;
 
     const baseUrl = `${request.protocol}://${request.get("host")}`;
@@ -70,7 +69,7 @@ class PointsController {
     return response.json({ point: serializedPoint, items });
   }
 
-  async create(request: Request, response: Response) {
+  async create(request: any, response: any) {
     const {
       name,
       email,
